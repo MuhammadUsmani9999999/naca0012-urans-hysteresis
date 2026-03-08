@@ -150,6 +150,9 @@ The Spalart–Allmaras model generates eddy viscosity ~10,000× the molecular va
 ### Why k–ω SST succeeds
 Menter's SST model constrains eddy viscosity via the Bradshaw-based limiter: ν_t = a₁k / max(a₁ω, ΩF₂), where a₁ = 0.31. This caps eddy viscosity in adverse-pressure-gradient regions, permitting unsteady vortex shedding to develop.
 
+### AI Assistance: 
+The PyFluent automation scripts were developed with the assistance of Claude (Anthropic). All simulation parameters, physical reasoning, and results interpretation are the author's own work.
+
 ## References
 
 1. Ladson, C.L. (1988). "Effects of Independent Variation of Mach and Reynolds Numbers on the Low-Speed Aerodynamic Characteristics of the NACA 0012 Airfoil Section." *NASA TM 4074*.
