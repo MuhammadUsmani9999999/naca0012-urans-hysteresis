@@ -1,0 +1,11 @@
+alpha_deg,direction,C_L,C_D,delta_CL_deficit
+14,Pitch-Up,1.408,0.0214,
+16,Pitch-Up,1.529,0.0296,
+18,Pitch-Up,1.585,0.0418,
+20,Pitch-Up,1.415,0.0796,
+22,Pitch-Up,1.145,0.4657,
+22,Pitch-Down,1.124,0.4634,-1.8%
+20,Pitch-Down,1.117,0.3641,-21.1%
+18,Pitch-Down,1.571,0.0420,-0.9%
+16,Pitch-Down,1.531,0.0271,+0.1%
+14,Pitch-Down,1.410,0.0201,+0.1%

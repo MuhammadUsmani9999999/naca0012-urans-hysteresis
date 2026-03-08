@@ -1,0 +1,22 @@
+# NACA 0012 URANS Hysteresis Study — Python Dependencies
+#
+# Core requirement: ANSYS Fluent 2025 R2 must be installed separately.
+# PyFluent connects to a running Fluent session.
+
+# ANSYS PyFluent API
+ansys-fluent-core>=0.20.0
+
+# Data processing
+numpy>=1.24.0
+pandas>=2.0.0
+scipy>=1.11.0
+
+# Plotting and visualisation
+matplotlib>=3.7.0
+
+# Checkpointing and configuration
+json5>=0.9.0
+
+# Optional: Jupyter notebook support for post-processing
+# jupyter>=1.0.0
+# ipywidgets>=8.0.0

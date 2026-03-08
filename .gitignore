@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+*.so
+venv/
+.env
+
+# ANSYS Fluent
+*.cas
+*.cas.h5
+*.dat
+*.dat.h5
+*.trn
+*.out
+*.jou
+cleanup-script
+*.fmu
+
+# Large data files
+*.cgns
+*.msh
+*.msh.h5
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Results (large binary outputs — store references only)
+results/raw/
+results/*.vtk
+results/*.ensight
+
+# Logs
+*.log
+logs/

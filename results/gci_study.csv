@@ -1,0 +1,5 @@
+mesh_level,elements,C_D_alpha0,error_to_experiment_pct
+Coarse,125316,0.008146,0.69
+Medium,250000,0.008137,0.58
+Fine,499848,0.008129,0.48
+Extrapolated,inf,0.0081,0.12
