@@ -152,24 +152,24 @@ Menter's SST model constrains eddy viscosity via the Bradshaw-based limiter: ν_
 
 ## References
 
-1. Ladson, C.L., Hill, A.S., and Johnson, W.G. (1988). *NASA TM 4074*.
-2. Menter, F.R. (1994). "Two-Equation Eddy-Viscosity Turbulence Models for Engineering Applications." *AIAA Journal*, 32(8), 1598–1605.
+1. Ladson, C.L. (1988). "Effects of Independent Variation of Mach and Reynolds Numbers on the Low-Speed Aerodynamic Characteristics of the NACA 0012 Airfoil Section." *NASA TM 4074*.
+2. Menter, F.R. (1994). "Two-Equation Eddy-Viscosity Turbulence Models for Engineering Applications." *AIAA Journal*, 32(8), 1598–1605. DOI: 10.2514/3.12149.
 3. Roache, P.J. (1998). *Verification and Validation in Computational Science and Engineering*. Hermosa Publishers.
-4. McCroskey, W.J. (1987). *NASA TM 100019*.
+4. McCroskey, W.J. (1987). "A Critical Assessment of Wind Tunnel Results for the NACA 0012 Airfoil." *NASA TM 100019*.
 5. Leishman, J.G. (2006). *Principles of Helicopter Aerodynamics*, 2nd ed. Cambridge University Press.
 6. ANSYS, Inc. (2025). *ANSYS Fluent Theory Guide, Release 2025 R2*.
-7. Menter, F.R. and Lechner, R. (2021). "Best Practice: RANS Turbulence Modelling in Ansys CFD." Ansys Germany GmbH.
-8. Allmaras, S.R., Johnson, F.T., and Spalart, P.R. (2012). *ICCFD7-1902*.
-9. Yang, Y.-C. and Zha, G.-C. (2016). *AIAA Paper 2016-3185*.
-10. Patel, P., Yang, Y., and Zha, G. (2019). *AIAA Paper 2019-3527*.
-11. Kraichnan, R.H. (1967). *Physics of Fluids*, 10, 1417–1423.
-12. Bos, W.J.T. (2021). *Journal of Fluid Mechanics*, 915, A121.
-13. Israel, D.M. (2023). *Journal of Turbulence*, 24(8), 367–392.
-14. Martinat, G. et al. (2008). *Journal of Fluids and Structures*, 24, 1294–1303.
-15. Sereez, M. et al. (2024). *Aerospace*, 11(5), 354.
+7. Menter, F.R., Lechner, R., and Matyushenko, A. (2021). "Best Practice: RANS Turbulence Modelling in Ansys CFD." Version 1.0, Ansys Germany GmbH.
+8. Allmaras, S.R., Johnson, F.T., and Spalart, P.R. (2012). "Modifications and Clarifications for the Implementation of the Spalart–Allmaras Turbulence Model." *ICCFD7-1902*, 7th International Conference on Computational Fluid Dynamics, Big Island, Hawaii.
+9. Yang, Y.-C. and Zha, G.-C. (2016). "Simulation of Airfoil Stall Flows Using IDDES with High Order Schemes." *AIAA Paper 2016-3185*. DOI: 10.2514/6.2016-3185.
+10. Patel, P., Yang, Y., and Zha, G. (2019). "Scale Adaptive Simulation of Stalled NACA 0012 Airfoil Using High Order Schemes." *AIAA Paper 2019-3527*.
+11. Kraichnan, R.H. (1967). "Inertial Ranges in Two-Dimensional Turbulence." *Physics of Fluids*, 10(7), 1417–1423. DOI: 10.1063/1.1762301.
+12. Bos, W.J.T. (2021). "Three-Dimensional Turbulence Without Vortex Stretching." *Journal of Fluid Mechanics*, 915, A121. DOI: 10.1017/jfm.2021.194.
+13. Israel, D.M. (2023). "The Myth of URANS." *Journal of Turbulence*, 24(8), 367–392. DOI: 10.1080/14685248.2023.2225140.
+14. Martinat, G., Braza, M., Hoarau, Y., and Harran, G. (2008). "Turbulence Modelling of the Flow Past a Pitching NACA 0012 Airfoil at 10⁵ and 10⁶ Reynolds Numbers." *Journal of Fluids and Structures*, 24(8), 1294–1303. DOI: 10.1016/j.jfluidstructs.2008.06.002.
+15. Sereez, M., Abramov, N., and Goman, M. (2024). "CFD Simulations and Phenomenological Modelling of Aerodynamic Stall Hysteresis of NACA 0018 Wing." *Aerospace*, 11(5), 354. DOI: 10.3390/aerospace11050354.
 16. NASA Turbulence Modelling Resource: [turbmodels.larc.nasa.gov](https://turbmodels.larc.nasa.gov/naca0012_val.html)
-17. Celik, I.B. et al. (2008). *Journal of Fluids Engineering*, 130(7).
-18. Roshko, A. (1954). *NACA Report 1191*.
+17. Celik, I.B. et al. (2008). "Procedure for Estimation and Reporting of Uncertainty Due to Discretization in CFD Applications." *Journal of Fluids Engineering*, 130(7). DOI: 10.1115/1.2960953.
+18. Roshko, A. (1954). "On the Development of Turbulent Wakes from Vortex Streets." *NACA Report 1191*.
 
 ## Licence
 
