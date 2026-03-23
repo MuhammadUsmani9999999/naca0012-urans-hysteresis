@@ -16,7 +16,7 @@ The entire workflow — from mesh validation through steady-state preconditionin
 
 ### Important Physics Note
 
-The pitching simulation uses a pitch rate of 2°/s, giving a reduced frequency of **k ≈ 0.000197** — approximately 20× below the quasi-steady threshold (k < 0.004) established by McAlister et al. (NASA TM-78446). This means the observed phenomena are **quasi-static bifurcation hysteresis** (path-dependent switching between attached and separated flow attractors), not dynamic stall in the classical sense. The study correctly identifies and characterises this distinction.
+The pitching simulation uses a pitch rate of 2°/s, giving a reduced frequency of **k ≈ 0.000197** — approximately 250× below the classical dynamic stall threshold (k ≥ 0.05) and 20× below the quasi-steady threshold (k < 0.004) established by McAlister et al. (NASA TM-78446). This means the observed phenomena are **quasi-static bifurcation hysteresis** (path-dependent switching between attached and separated flow attractors), not dynamic stall in the classical sense. No dynamic stall vortex (DSV) mechanism operates at this reduced frequency.
 
 ---
 
@@ -31,6 +31,7 @@ The pitching simulation uses a pitch rate of 2°/s, giving a reduced frequency o
 | **Bifurcation hysteresis band** | α = 20–21° (static sweep); α = 19–21° (transient) |
 | **Recovery convergence** | Branches converge below α ≈ 18° (deficit < 1%) |
 | **Reduced frequency** | k ≈ 0.0002 (quasi-steady regime) |
+| **Wake Strouhal number** | St_d = 0.196–0.205 (bluff-body range); St_c = 0.573 |
 
 ---
 
@@ -64,12 +65,41 @@ Following the definitive workflow (Menter and Lechner, 2021):
 
 | Parameter | Value |
 |---|---|
+| **Topology** | Structured C-grid |
 | **Nodes** | 501,473 |
 | **Elements** | 499,848 |
 | **Orthogonal quality** | Min 0.3495 / Avg 0.984 |
-| **Skewness** | Max 0.410 |
-| **Element quality** | Avg 0.267 |
-| **Target y⁺** | ≈ 1 (wall-resolved SST) |
+| **Skewness** | Max 0.410 (well below 0.85 threshold) |
+| **Element quality** | Avg 0.267 (expected for high-AR structured BL cells) |
+| **Target y⁺** | ≈ 1 (achieved: y⁺ < 0.39 everywhere at α = 20°) |
+| **Domain extent** | 10c upstream / 13c downstream / 20c normal (see Limitations) |
+
+---
+
+## Verification and Validation
+
+### Grid Convergence Index (GCI)
+
+Three systematically refined meshes were tested at α = 0°:
+
+| Mesh Level | Elements | C_D | Error vs Ladson (1988) |
+|---|---|---|---|
+| Coarse | 125,316 | 0.008146 | 0.69% |
+| Medium | 250,000 | 0.008137 | 0.58% |
+| Fine | 499,848 | 0.008129 | 0.48% |
+| Richardson extrapolation | ∞ | 0.0081 | 0.12% |
+
+The spatial discretisation uncertainty is < 0.5% for C_D at α = 0°.
+
+### Pre-Stall Validation
+
+| Check | Result | Status |
+|---|---|---|
+| Lift slope (2–8°) | 0.106/deg (expected ~0.110) | ✓ Within 3.5% |
+| Symmetry at α = 0° | C_L difference < 10⁻⁴ between branches | ✓ |
+| Negative drag | None detected | ✓ |
+| Monotonic lift (0–10°) | Confirmed | ✓ |
+| C_D at α = 0° | 0.00820 (Ladson: ~0.008) | ✓ Excellent |
 
 ---
 
@@ -88,12 +118,6 @@ The static sweep uses adaptive C_L-based convergence checking — iterations run
 | 16 | 1.5299 | 0.02830 |
 | 18 | 1.5755 | 0.04189 |
 
-**Sanity checks (all passed):**
-- Lift slope: 0.106/deg (expected ~0.110/deg) ✓
-- C_L at α = 0°: −0.00012 on both branches (symmetric) ✓
-- No negative drag ✓
-- Monotonically increasing lift 0–10° ✓
-
 ### Bifurcation Hysteresis (Static Sweep)
 
 | α (°) | C_L (upstroke) | C_L (downstroke) | Δ C_L |
@@ -104,7 +128,7 @@ The static sweep uses adaptive C_L-based convergence checking — iterations run
 | 20 | 1.079 | 0.547 | **−0.531** |
 | 21 | 1.262 | 1.099 | **−0.163** |
 
-Hysteresis is confined to α = 20–21° — the deep post-stall region where attached and separated flow states coexist as competing attractors. No spurious hysteresis at low angles, confirming the solution is properly converged.
+**Note on post-stall values:** At α ≥ 19° the steady solver cannot converge — the flow is inherently unsteady. The values above are instantaneous snapshots of an oscillating solution and should not be compared quantitatively with time-averaged URANS results. Hysteresis is confined to α = 20–21° — the deep post-stall region where attached and separated flow states coexist as competing attractors. No spurious hysteresis at low angles, confirming the solution is properly converged.
 
 ---
 
@@ -125,6 +149,12 @@ Hysteresis is confined to α = 20–21° — the deep post-stall region where at
 
 ---
 
+## Wake Spectral Analysis
+
+Three wake probes (1.5c, 3.0c, 4.5c downstream) identified a dominant shedding frequency of **f₁ = 50.77 Hz** during deep stall at α ≈ 20–21°. The projected-height Strouhal number **St_d = 0.196–0.205** falls within the universal bluff-body range (Roshko, 1954), confirming the vortex-shedding mechanism is correctly captured. The chord-based value (St_c = 0.573) exceeds the commonly cited 0.15–0.25 range, but this is a geometric scaling effect at moderate α — see `docs/fidelity_expectations.md` for the full discussion. The shedding frequency should be treated as qualitatively correct but may be biased upward by domain blockage and 2D confinement.
+
+---
+
 ## Repository Structure
 
 ```
@@ -136,15 +166,25 @@ naca0012-urans-hysteresis/
 ├── .gitignore
 ├── scripts/
 │   ├── naca0012_sst_static_sweep.py        # SST static sweep (v2, adaptive convergence)
-│   └── naca0012_urans_complete.py          # URANS transient pitch automation
+│   ├── naca0012_urans_complete.py          # URANS transient pitch automation
+│   ├── naca0012_rans_only_with_export.py   # SA RANS sweep (supplementary baseline)
+│   └── utils/
+│       ├── convergence_monitor.py          # Moving-window σ(C_L) convergence
+│       ├── vector_calculator.py            # Lift/drag direction vectors
+│       └── checkpoint_manager.py           # JSON-based crash recovery
 ├── results/
 │   ├── sst_static_sweep_coefficients.csv   # SST static sweep: C_L, C_D at each alpha
 │   ├── convergence_history.csv             # Batch-by-batch convergence verification
+│   ├── urans_hysteresis.csv                # URANS pitch: C_L, C_D at checkpoint angles
+│   ├── wake_psd_data.csv                   # Wake probe spectral analysis
+│   ├── gci_study.csv                       # Grid convergence index data
+│   ├── sa_rans_sweep.csv                   # SA baseline sweep (supplementary)
 │   └── static_sweep.log                    # Full run log with sanity checks
 ├── docs/
-│   ├── NACA0012_Portfolio_Report_v5.docx   # Full portfolio report
+│   ├── NACA0012_Portfolio_Report.pdf        # Full portfolio report
+│   ├── REPORT_ERRATA.md                    # Terminology corrections (pending)
 │   ├── Definitivemits_1.pdf                # Workflow reference document
-│   └── fidelity_expectations.md            # 2D URANS accuracy summary
+│   └── fidelity_expectations.md            # 2D URANS accuracy summary + Strouhal analysis
 ├── mesh/
 │   └── mesh_quality_summary.md             # Mesh quality metrics
 └── figures/
@@ -155,10 +195,25 @@ naca0012-urans-hysteresis/
 
 ## Known Limitations
 
-- **Far-field domain extent**: The domain extends 10–20c from the aerofoil, below the 50–500c best-practice recommendation. This may introduce blockage effects at high angles of attack.
-- **2D assumption**: Post-stall C_L is overpredicted by 10–25% and C_D by 20–50% compared to experiment (Ladson, 1988). Real deep-stall flow has three-dimensional stall cells absent from 2D simulations.
-- **Post-stall oscillation**: At α ≥ 19° (static sweep), the steady solver cannot converge — values are snapshots of an inherently unsteady solution. The pre-stall region (0–18°) is where trustworthy quantitative comparison lives.
-- **Quasi-steady regime**: The 2°/s pitch rate (k ≈ 0.0002) is firmly in the quasi-steady regime. Any hysteresis observed is bifurcation hysteresis, not dynamic stall.
+### Far-Field Domain Extent (Critical)
+
+The domain extends only 10–20c from the aerofoil, well below the 50–500c best-practice recommendation (Menter and Lechner, 2021; NASA TMR). At α = 20°, the effective blockage ratio is d/H ≈ sin(20°)/20 ≈ 1.7%, which is non-negligible. This blockage artificially accelerates flow around the aerofoil, potentially overpredicting lift and raising the shedding frequency. The limited downstream extent (13c) may also reflect pressure disturbances back to the aerofoil. A domain-sensitivity study would quantify this error; until then, post-stall results should be treated with additional caution.
+
+### 2D Assumption
+
+Post-stall C_L is overpredicted by 10–25% and C_D by 20–50% compared to experiment (Ladson, 1988). Real deep-stall flow has three-dimensional stall cells (spacing ~1.4–1.8c) absent from 2D simulations. Vortex shedding is artificially coherent and narrowband. See `docs/fidelity_expectations.md` for the full accuracy table.
+
+### Post-Stall Static Sweep Values
+
+At α ≥ 19° (static sweep), the steady solver cannot converge — values are snapshots of an inherently unsteady solution, not time-averaged quantities. The pre-stall region (0–18°) is where trustworthy quantitative comparison with experiment and with the transient results is valid.
+
+### Quasi-Steady Regime
+
+The 2°/s pitch rate (k ≈ 0.0002) is firmly in the quasi-steady regime. Any hysteresis observed is bifurcation hysteresis (path-dependent attractor switching), not classical dynamic stall. See the reduced-frequency verification in the static sweep log for the full derivation.
+
+### GCI at α = 0° Only
+
+The grid convergence study was performed exclusively at α = 0° (attached flow). Mesh sensitivity is typically greater in deep stall. The GCI result of < 0.5% applies to attached-flow conditions; post-stall grid sensitivity has not been formally quantified.
 
 ---
 
@@ -196,6 +251,7 @@ naca0012-urans-hysteresis/
 8. McAlister, K.W., Pucci, S.L., McCroskey, W.J., Carr, L.W. (1982). "An Experimental Study of Dynamic Stall on Advanced Airfoil Sections." NASA TM-84245.
 9. Martinat, G. et al. (2008). "Turbulence Modelling of the Flow Past a Pitching NACA 0012 Airfoil." *Journal of Fluids and Structures*, 24, 1294–1303.
 10. Israel, D.M. (2023). "The Myth of URANS." *Journal of Turbulence*, 24(8), 367–392.
+11. Roshko, A. (1954). "On the Development of Turbulent Wakes from Vortex Streets." NACA Report 1191.
 
 ---
 
