@@ -1,0 +1,46 @@
+alpha_deg,branch,C_L,C_D,converged,iterations,notes
+0.0,upstroke,-0.0001197999807535116,0.008196558710998962,converged at 1000 iters,1000,Attached flow  linear lift regime
+1.0,upstroke,0.1085104702661249,0.008249094267975468,converged at 1000 iters,1000,Attached flow  linear lift regime
+2.0,upstroke,0.2170712415447433,0.008406128295038652,converged at 1000 iters,1000,Attached flow  linear lift regime
+3.0,upstroke,0.3253811006525124,0.008668380972419723,converged at 1000 iters,1000,Attached flow  linear lift regime
+4.0,upstroke,0.4330611925621297,0.00903820366203569,converged at 1000 iters,1000,Attached flow  linear lift regime
+5.0,upstroke,0.5399070172135271,0.009520778664172898,converged at 1000 iters,1000,Attached flow  linear lift regime
+6.0,upstroke,0.6458231535181927,0.01012394659317524,converged at 1000 iters,1000,Attached flow  linear lift regime
+7.0,upstroke,0.7505152674529877,0.01085756377028651,converged at 1000 iters,1000,Attached flow  linear lift regime
+8.0,upstroke,0.853645160901385,0.0117348080837232,converged at 1000 iters,1000,Attached flow  linear lift regime
+9.0,upstroke,0.9547449224466815,0.01277196641466236,converged at 1000 iters,1000,Attached flow  linear lift regime
+10.0,upstroke,1.05315900596166,0.01399020982621576,converged at 1000 iters,1000,Approaching stall  nonlinear lift
+11.0,upstroke,1.148310697211946,0.01542041730295556,converged at 1000 iters,1000,Approaching stall  nonlinear lift
+12.0,upstroke,1.23926672581009,0.01710240525213069,converged at 2000 iters,2000,Approaching stall  nonlinear lift
+13.0,upstroke,1.324873581974108,0.01909714684536552,converged at 2000 iters,2000,Approaching stall  nonlinear lift
+14.0,upstroke,1.403568304811112,0.02149924543568769,converged at 2000 iters,2000,Approaching stall  nonlinear lift
+15.0,upstroke,1.473071459596625,0.02446920000711023,converged at 2000 iters,2000,Approaching stall  nonlinear lift
+16.0,upstroke,1.529861605938756,0.02830009997758265,converged at 2000 iters,2000,Post-stall  quasi-static bifurcation regime
+17.0,upstroke,1.568478356474489,0.03359574752275445,converged at 2000 iters,2000,Post-stall  quasi-static bifurcation regime
+18.0,upstroke,1.575455188935572,0.04188714843614085,converged at 2800 iters,2800,Post-stall  quasi-static bifurcation regime
+19.0,upstroke,0.6481710509159311,0.3361750684308502,oscillating after 5000 iters (expected post-stall),5000,Post-stall  quasi-static bifurcation regime
+20.0,upstroke,1.078674863652672,0.1367557413978643,oscillating after 5000 iters (expected post-stall),5000,Post-stall  quasi-static bifurcation regime
+21.0,upstroke,1.262322248158464,0.1401083479781882,oscillating after 5000 iters (expected post-stall),5000,Post-stall  quasi-static bifurcation regime
+22.0,upstroke,0.9455220122116748,0.168568864365156,oscillating after 5000 iters (expected post-stall),5000,Post-stall  quasi-static bifurcation regime
+21.0,downstroke,1.09929192716567,0.148359431760687,oscillating after 5000 iters (expected post-stall),5000,Post-stall  quasi-static bifurcation regime
+20.0,downstroke,0.5473260636275799,0.2379280983188776,oscillating after 5000 iters (expected post-stall),5000,Post-stall  quasi-static bifurcation regime | HYSTERESIS DETECTION ZONE
+19.0,downstroke,0.6864598657565539,0.2021179025277537,oscillating after 5000 iters (expected post-stall),5000,Post-stall  quasi-static bifurcation regime | HYSTERESIS DETECTION ZONE
+18.0,downstroke,1.571385715027747,0.0418786790923095,converged at 4600 iters,4600,Post-stall  quasi-static bifurcation regime | HYSTERESIS DETECTION ZONE
+17.0,downstroke,1.568494267363459,0.03359625451925511,converged at 2000 iters,2000,Post-stall  quasi-static bifurcation regime | HYSTERESIS DETECTION ZONE
+16.0,downstroke,1.529858169793325,0.02830037860473112,converged at 2000 iters,2000,Post-stall  quasi-static bifurcation regime | HYSTERESIS DETECTION ZONE
+15.0,downstroke,1.473071512866413,0.02446866010186933,converged at 2000 iters,2000,Approaching stall  nonlinear lift | HYSTERESIS DETECTION ZONE
+14.0,downstroke,1.403567728460179,0.02149943809517426,converged at 2000 iters,2000,Approaching stall  nonlinear lift | HYSTERESIS DETECTION ZONE
+13.0,downstroke,1.324873768939862,0.01909710029717058,converged at 2000 iters,2000,Approaching stall  nonlinear lift | HYSTERESIS DETECTION ZONE
+12.0,downstroke,1.239266624472403,0.01710247381646484,converged at 2000 iters,2000,Approaching stall  nonlinear lift | HYSTERESIS DETECTION ZONE
+11.0,downstroke,1.148310383505439,0.01542081411667837,converged at 1000 iters,1000,Approaching stall  nonlinear lift | HYSTERESIS DETECTION ZONE
+10.0,downstroke,1.053158960914607,0.01399017296285226,converged at 1000 iters,1000,Approaching stall  nonlinear lift | HYSTERESIS DETECTION ZONE
+9.0,downstroke,0.9547449135048389,0.01277194832642091,converged at 1000 iters,1000,Attached flow  linear lift regime
+8.0,downstroke,0.853645125150909,0.01173480059504409,converged at 1000 iters,1000,Attached flow  linear lift regime
+7.0,downstroke,0.7505152659230404,0.01085756009459699,converged at 1000 iters,1000,Attached flow  linear lift regime
+6.0,downstroke,0.645823164800822,0.01012395704707495,converged at 1000 iters,1000,Attached flow  linear lift regime
+5.0,downstroke,0.539907007227495,0.009520789247883157,converged at 1000 iters,1000,Attached flow  linear lift regime
+4.0,downstroke,0.4330611989828249,0.009038197391275487,converged at 1000 iters,1000,Attached flow  linear lift regime
+3.0,downstroke,0.3253810902690208,0.008668353101323033,converged at 1000 iters,1000,Attached flow  linear lift regime
+2.0,downstroke,0.2170712610924893,0.008406151879013534,converged at 1000 iters,1000,Attached flow  linear lift regime
+1.0,downstroke,0.1085104501637759,0.008249079785573323,converged at 1000 iters,1000,Attached flow  linear lift regime
+0.0,downstroke,-0.0001199437011305039,0.008196621807934438,converged at 1000 iters,1000,Attached flow  linear lift regime
