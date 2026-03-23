@@ -34,6 +34,35 @@ The original study used Spalart–Allmaras (SA) for the static sweep and k–ω 
 
 Any observed stall angle difference between SA static and SST dynamic could simply be a turbulence model artefact, not an aerodynamic phenomenon. By running both cases with SST, the comparison is scientifically valid.
 
+## Wake Strouhal Number Assessment
+
+### Measured Values
+
+The URANS simulation at α = 20–21° produced a dominant vortex-shedding frequency of f₁ = 50.77 Hz, consistent across all three wake probe stations (1.5c, 3.0c, and 4.5c downstream). This yields:
+
+| Definition | Formula | Value | Expected Range | Assessment |
+|---|---|---|---|---|
+| Chord-based | St_c = f·c/U∞ | 0.573 | 0.15–0.25 (literature) | **Above range** |
+| Projected-height-based | St_d = f·d/U∞ | 0.196–0.205 | 0.15–0.20 (Roshko, 1954) | **Within range** |
+
+### Interpretation
+
+The chord-based Strouhal number of St_c = 0.573 substantially exceeds the 0.15–0.25 range commonly cited in 2D URANS literature. However, this is primarily a scaling artefact rather than a physical anomaly. The literature values of St_c ≈ 0.15–0.25 are typically reported at higher angles of attack (α = 45–90°) where sin(α) is larger, making the chord and projected height more comparable. At α = 20–21°, the geometric conversion St_c = St_d/sin(α) amplifies a physically reasonable St_d by a factor of ~2.8.
+
+The projected-height Strouhal number of St_d = 0.196–0.205 falls squarely within the universal bluff-body range established by Roshko (1954), confirming that the fundamental vortex-shedding mechanism is correctly captured. The aerofoil in deep stall at α = 20° behaves, from a wake dynamics perspective, as a bluff body with an effective frontal height of d = c·sin(20°) ≈ 0.342 m.
+
+### Caveats and Known Biases
+
+Two factors may bias the shedding frequency upward:
+
+1. **Domain blockage.** The computational domain extends only 10–20c from the aerofoil, below the recommended 50–500c. The resulting blockage (~1.7% at α = 20°) locally accelerates flow past the aerofoil, increasing the effective velocity and raising the shedding frequency. A larger domain would likely produce a slightly lower f₁.
+
+2. **Two-dimensional confinement.** The 2D constraint eliminates spanwise phase decorrelation, producing artificially coherent and narrowband shedding (Martinat et al., 2008). In 3D flow, spanwise instabilities broaden the spectral peak and reduce the apparent dominant frequency.
+
+### Recommendation
+
+The shedding frequency of 50.77 Hz and the corresponding St_d ≈ 0.20 should be treated as qualitatively correct but quantitatively indicative. A domain-sensitivity study (running at 50c extent) and/or a temporal convergence check (halving Δt) would strengthen confidence in this result. Users requiring precise shedding frequencies should employ 3D DDES/IDDES with a spanwise domain of 1–2 chord lengths.
+
 ## What 2D URANS Reliably Predicts
 
 - Pre-stall lift-curve slope (within 4%)
@@ -41,18 +70,28 @@ Any observed stall angle difference between SA static and SST dynamic could simp
 - Stall-onset angle (within 1–3°)
 - Existence and location of bifurcation hysteresis
 - Qualitative flow topology (separation/reattachment sequence)
+- Bluff-body Strouhal scaling (St_d within universal range)
 
 ## What 2D URANS Cannot Reliably Predict
 
 - Post-stall C_L magnitude (overpredicted 10–25%)
 - Deep-stall drag (overpredicted 20–50%)
-- Vortex shedding frequency (artificially narrowband and high-frequency)
+- Absolute vortex shedding frequency (biased by 2D confinement and domain blockage)
 - Wake topology and broadband spectral content
 - Spanwise stall-cell effects (absent from 2D)
 
 ## Quasi-Steady vs Dynamic Stall Distinction
 
 The pitching simulation at 2°/s gives k ≈ 0.000197. This is in the quasi-steady regime (k < 0.004 per McAlister et al., NASA TM-78446). The observed hysteresis is **bifurcation hysteresis** — not dynamic stall. Dynamic stall requires k = 0.05–0.25, where a dynamic stall vortex (DSV) temporarily augments lift beyond static C_L,max.
+
+**Correct terminology for this study:**
+- ✓ Quasi-static hysteresis
+- ✓ Bifurcation hysteresis
+- ✓ Static stall hysteresis
+- ✓ Path-dependent stall
+- ✗ Dynamic stall delay
+- ✗ Dynamic overshoot
+- ✗ Dynamic hysteresis (at this pitch rate)
 
 ## Recommendation for Future Work
 
