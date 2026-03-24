@@ -217,55 +217,37 @@ The grid convergence study was performed exclusively at α = 0° (attached flow)
 
 ---
 
-## Revision History and Lessons Learnt
+## Reflections and Omissions
 
-This section documents corrections and additions made after the initial publication of this repository, along with honest reflections on why each issue was missed. These are recorded here rather than buried in commit messages, because understanding *why* a shortcoming occurs is as valuable as fixing it.
+This section is a candid discussion of what this study does not include and why. CFD projects involve trade-offs between rigour and available resources, and some of those trade-offs are only fully understood after the work is complete. Rather than leave these gaps for a reviewer to discover, they are documented here alongside the reasoning behind the original decisions.
 
-### Rev 1 → Rev 2: What Changed and Why
+### The SA Static Sweep and the Missing SST Baseline
 
-#### 1. Terminology Correction: "Dynamic Stall Delay" → "Bifurcation Hysteresis"
+The portfolio report presents a Spalart–Allmaras (SA) steady-state sweep as the static baseline and compares it against the k–ω SST URANS transient pitch. This creates a turbulence model confound that the study should have controlled for.
 
-**What changed:** All references to "dynamic stall delay" and "dynamic overshoot" in the portfolio report were replaced with "quasi-static bifurcation hysteresis" and "bifurcation delay." A full errata is provided in `docs/REPORT_ERRATA.md`.
+The original reasoning was straightforward: SA is the industry-standard one-equation model recommended by the NASA Turbulence Modelling Resource for attached-flow aerofoil validation. It converges quickly, is robust in steady-state mode, and produces well-validated results in the pre-stall regime. SST was reserved for the transient case because its Bradshaw shear-stress limiter (a₁ = 0.31) is necessary to permit the flow instabilities that drive vortex shedding in deep stall. The intention was to compare the standard steady approach against the unsteady approach — two different methodologies applied to the same problem.
 
-**Why it was missed:** The project began as an investigation of dynamic stall, and the language carried forward from that original framing even after the reduced-frequency calculation showed the pitch rate was quasi-steady. The script `naca0012_sst_static_sweep.py` correctly flags this (it prints "Your pitch rate is 20× BELOW the quasi-steady threshold" and lists correct terminology), but the report was written in parallel and was not updated to reflect the script's own conclusions. This is a common failure mode in long-running projects: the analysis evolves but the narrative lags behind. The lesson is to treat the reduced-frequency check as a gate that must be passed before any terminology is committed to the report — not as a post-hoc footnote.
+The issue is that SA and SST predict fundamentally different stall behaviour. SA generates eddy viscosity roughly 10,000× the molecular value in separated regions (Allmaras, Johnson, and Spalart, ICCFD7-1902), which damps Kelvin–Helmholtz instabilities and typically produces earlier, more abrupt stall. SST's Bradshaw limiter caps eddy viscosity in adverse-pressure-gradient regions, allowing a more gradual stall process with a higher stall angle. Any difference in C_L between the SA static and SST dynamic results could therefore be the turbulence model, not the aerodynamic hysteresis.
 
-#### 2. Strouhal Number Discussion Added
+An SST static sweep should have been included from the outset so that the hysteresis comparison would be like-for-like: same model, same settings, only the solver methodology (steady vs transient) differs. This script (`naca0012_sst_static_sweep.py`) and its results (`sst_static_sweep_coefficients.csv`) now exist in the repository and form the scientifically valid comparison. The SA results (`sa_rans_sweep.csv`) remain as supplementary context — they are useful for showing how model selection affects stall prediction, but they should not be the basis for quantifying hysteresis.
 
-**What changed:** A dedicated "Wake Strouhal Number Assessment" section was added to `docs/fidelity_expectations.md`, explaining why St_c = 0.573 appears anomalous, why St_d = 0.196 confirms bluff-body universality, and what biases (domain blockage, 2D confinement) may affect the absolute shedding frequency.
+### The Far-Field Domain (10–20c Instead of 50–500c)
 
-**Why it was missed:** The portfolio report's Appendix A.3 already contained a competent analysis of this — distinguishing St_c from St_d and invoking the geometric scaling identity. However, this discussion was confined to the report and not reflected in the repository-level documentation. A reviewer reading only the README and `wake_psd_data.csv` would see St_c = 0.573 without context and reasonably flag it as anomalous. The lesson is that every quantitative result in a CSV file should have its interpretation accessible at the same level of the repository — not locked inside a PDF that someone may not open first.
+The computational domain extends 10c upstream, 13c downstream, and 20c in the normal direction. Menter and Lechner (2021) and the NASA Turbulence Modelling Resource recommend 50–500 chord lengths. This gap is the single largest source of systematic error in the simulation, and it was a deliberate compromise.
 
-#### 3. Far-Field Domain Extent Documented as Critical Limitation
+The constraint is the ANSYS Student licence cell count limit. The structured C-grid at 500k cells already consumes the majority of the available budget, and the near-wall resolution cannot be sacrificed — wall-resolved SST requires y⁺ < 1, which demands extremely thin first cells and a gradual inflation-layer growth ratio. Extending the far-field to 50c whilst maintaining this near-wall resolution would require approximately 1.5–2M cells, exceeding what the Student licence permits.
 
-**What changed:** The Known Limitations section was expanded from a single-line acknowledgement to a quantified discussion including the blockage ratio (~1.7% at α = 20°) and the downstream pressure-reflection risk.
+The consequence is quantifiable. At α = 20°, the effective blockage ratio is d/H ≈ sin(20°)/20 ≈ 1.7%. This is not catastrophic, but it is non-negligible: the blockage artificially accelerates flow around the aerofoil, biasing lift upward and potentially raising the vortex-shedding frequency. The limited downstream extent (13c) may also reflect pressure disturbances back to the trailing edge, affecting the wake structure. A domain-sensitivity study — running the same case at 30c and 50c — would quantify these effects, but requires rebuilding the mesh in an environment without the Student licence cell limit.
 
-**Why it was missed — honestly:** The domain extent was a deliberate compromise driven by the ANSYS Student licence cell count limit. The structured C-grid at 500k cells already consumes the majority of the available budget; extending the far-field to 50c whilst maintaining near-wall resolution would require approximately 1.5–2M cells, exceeding the Student licence capacity. This constraint was understood from the outset, but the original README listed it as a limitation without quantifying its impact. The lesson is that a known compromise should be accompanied by an estimate of its magnitude — "the domain is small" is less useful than "the domain produces ~1.7% blockage at α = 20°, which biases lift and shedding frequency upward."
+What should have been done differently: even within the cell budget, the domain could have been modestly extended by coarsening the far-field more aggressively. Alternatively, the blockage ratio could have been estimated and reported from the start, rather than simply noting that the domain was "below recommendations."
 
-#### 4. GCI Limitation Acknowledged
+### The Grid Convergence Index (α = 0° Only)
 
-**What changed:** A new subsection in Known Limitations notes that the GCI was performed only at α = 0° and that post-stall grid sensitivity has not been formally quantified.
+The three-level GCI study was performed at α = 0°, producing a spatial discretisation uncertainty of < 0.5% for C_D with excellent agreement against Ladson (1988). This verifies the mesh for attached flow, but it says nothing about mesh sensitivity in deep stall, where separated-flow structures, shear-layer resolution, and wake topology are all mesh-dependent.
 
-**Why it was missed:** The GCI study was conducted early in the project when the focus was on validating the mesh against Ladson (1988) at attached-flow conditions. By the time the study moved to deep stall, the three-mesh GCI infrastructure was no longer being maintained (the coarse and medium meshes had not been updated with the latest boundary-condition and solver settings). Retrospectively, running even a single post-stall angle on all three meshes would have taken only a few hours of compute time. The lesson is to design the GCI study for the hardest condition, not the easiest — if the mesh is adequate for deep stall, it is certainly adequate for attached flow, but the reverse is not guaranteed.
+The GCI was conducted early in the project when the priority was establishing credibility against experimental data. By the time the study progressed to deep stall, the coarse (125k) and medium (250k) meshes had fallen out of maintenance — their solver settings had not been updated alongside the fine mesh. Rerunning them was deprioritised in favour of the main hysteresis investigation, which was computationally expensive in its own right.
 
-#### 5. Mesh Documentation Improved
-
-**What changed:** `mesh/mesh_quality_summary.md` now includes a wall resolution table, a clarification that "Automatic Inflation: None" refers to the ANSYS Meshing tool (not to the actual boundary-layer resolution, which is inherent to the structured grid), and a note on the spatial location of degenerate cells.
-
-**Why it was missed:** The mesh quality screenshots were exported directly from ANSYS and documented at face value. It did not occur to the author that the "Automatic Inflation: None" setting could be misread as "no inflation layers exist," because the structured grid's boundary-layer resolution was self-evident during the meshing process. This is a perspective gap — what is obvious to the person who built the mesh is not obvious to someone reading the documentation months later. The lesson is to document the mesh from the perspective of a reviewer who has never opened the ANSYS project file.
-
-#### 6. Post-Stall Snapshot Caveat Added
-
-**What changed:** The static sweep results table now includes an explicit note that values at α ≥ 19° are instantaneous snapshots of an oscillating solution, not converged or time-averaged quantities.
-
-**Why it was missed:** The convergence log correctly reports these stations as "oscillating after 5000 iters (expected post-stall)," and the script handles them appropriately. But the results CSV and the README presented the values without this context, making them appear equivalent to the converged pre-stall values. The lesson is that data provenance matters — a number in a CSV should carry enough metadata (or a pointer to metadata) for the reader to assess its reliability.
-
-### What Remains Outstanding
-
-Two items identified during review have not yet been addressed and are flagged here for transparency:
-
-1. **Domain-sensitivity study.** Running the existing mesh alongside a 30c and 50c variant at a single deep-stall angle would quantify the blockage correction. This requires rebuilding the mesh and is planned but not yet completed.
-
-2. **Temporal convergence study.** The production time step (Δt = 5 × 10⁻⁴ s) resolves approximately 39 steps per shedding cycle, slightly below the recommended 50–100. A brief sensitivity test at α = 20° with Δt halved would confirm adequacy. This is planned for the next revision.
+In hindsight, this was a missed opportunity. Running even a single post-stall angle (α = 16°, just below stall onset) on all three meshes would have taken only a few hours of additional compute time. It would not have proven the mesh adequate for deep stall — that would require testing at α = 20° or higher — but it would have provided a much stronger verification case than the zero-incidence result alone. The general principle is that grid convergence should be assessed at the most demanding condition the simulation will encounter, not the least demanding.
 
 ---
 
