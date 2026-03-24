@@ -217,6 +217,58 @@ The grid convergence study was performed exclusively at α = 0° (attached flow)
 
 ---
 
+## Revision History and Lessons Learnt
+
+This section documents corrections and additions made after the initial publication of this repository, along with honest reflections on why each issue was missed. These are recorded here rather than buried in commit messages, because understanding *why* a shortcoming occurs is as valuable as fixing it.
+
+### Rev 1 → Rev 2: What Changed and Why
+
+#### 1. Terminology Correction: "Dynamic Stall Delay" → "Bifurcation Hysteresis"
+
+**What changed:** All references to "dynamic stall delay" and "dynamic overshoot" in the portfolio report were replaced with "quasi-static bifurcation hysteresis" and "bifurcation delay." A full errata is provided in `docs/REPORT_ERRATA.md`.
+
+**Why it was missed:** The project began as an investigation of dynamic stall, and the language carried forward from that original framing even after the reduced-frequency calculation showed the pitch rate was quasi-steady. The script `naca0012_sst_static_sweep.py` correctly flags this (it prints "Your pitch rate is 20× BELOW the quasi-steady threshold" and lists correct terminology), but the report was written in parallel and was not updated to reflect the script's own conclusions. This is a common failure mode in long-running projects: the analysis evolves but the narrative lags behind. The lesson is to treat the reduced-frequency check as a gate that must be passed before any terminology is committed to the report — not as a post-hoc footnote.
+
+#### 2. Strouhal Number Discussion Added
+
+**What changed:** A dedicated "Wake Strouhal Number Assessment" section was added to `docs/fidelity_expectations.md`, explaining why St_c = 0.573 appears anomalous, why St_d = 0.196 confirms bluff-body universality, and what biases (domain blockage, 2D confinement) may affect the absolute shedding frequency.
+
+**Why it was missed:** The portfolio report's Appendix A.3 already contained a competent analysis of this — distinguishing St_c from St_d and invoking the geometric scaling identity. However, this discussion was confined to the report and not reflected in the repository-level documentation. A reviewer reading only the README and `wake_psd_data.csv` would see St_c = 0.573 without context and reasonably flag it as anomalous. The lesson is that every quantitative result in a CSV file should have its interpretation accessible at the same level of the repository — not locked inside a PDF that someone may not open first.
+
+#### 3. Far-Field Domain Extent Documented as Critical Limitation
+
+**What changed:** The Known Limitations section was expanded from a single-line acknowledgement to a quantified discussion including the blockage ratio (~1.7% at α = 20°) and the downstream pressure-reflection risk.
+
+**Why it was missed — honestly:** The domain extent was a deliberate compromise driven by the ANSYS Student licence cell count limit. The structured C-grid at 500k cells already consumes the majority of the available budget; extending the far-field to 50c whilst maintaining near-wall resolution would require approximately 1.5–2M cells, exceeding the Student licence capacity. This constraint was understood from the outset, but the original README listed it as a limitation without quantifying its impact. The lesson is that a known compromise should be accompanied by an estimate of its magnitude — "the domain is small" is less useful than "the domain produces ~1.7% blockage at α = 20°, which biases lift and shedding frequency upward."
+
+#### 4. GCI Limitation Acknowledged
+
+**What changed:** A new subsection in Known Limitations notes that the GCI was performed only at α = 0° and that post-stall grid sensitivity has not been formally quantified.
+
+**Why it was missed:** The GCI study was conducted early in the project when the focus was on validating the mesh against Ladson (1988) at attached-flow conditions. By the time the study moved to deep stall, the three-mesh GCI infrastructure was no longer being maintained (the coarse and medium meshes had not been updated with the latest boundary-condition and solver settings). Retrospectively, running even a single post-stall angle on all three meshes would have taken only a few hours of compute time. The lesson is to design the GCI study for the hardest condition, not the easiest — if the mesh is adequate for deep stall, it is certainly adequate for attached flow, but the reverse is not guaranteed.
+
+#### 5. Mesh Documentation Improved
+
+**What changed:** `mesh/mesh_quality_summary.md` now includes a wall resolution table, a clarification that "Automatic Inflation: None" refers to the ANSYS Meshing tool (not to the actual boundary-layer resolution, which is inherent to the structured grid), and a note on the spatial location of degenerate cells.
+
+**Why it was missed:** The mesh quality screenshots were exported directly from ANSYS and documented at face value. It did not occur to the author that the "Automatic Inflation: None" setting could be misread as "no inflation layers exist," because the structured grid's boundary-layer resolution was self-evident during the meshing process. This is a perspective gap — what is obvious to the person who built the mesh is not obvious to someone reading the documentation months later. The lesson is to document the mesh from the perspective of a reviewer who has never opened the ANSYS project file.
+
+#### 6. Post-Stall Snapshot Caveat Added
+
+**What changed:** The static sweep results table now includes an explicit note that values at α ≥ 19° are instantaneous snapshots of an oscillating solution, not converged or time-averaged quantities.
+
+**Why it was missed:** The convergence log correctly reports these stations as "oscillating after 5000 iters (expected post-stall)," and the script handles them appropriately. But the results CSV and the README presented the values without this context, making them appear equivalent to the converged pre-stall values. The lesson is that data provenance matters — a number in a CSV should carry enough metadata (or a pointer to metadata) for the reader to assess its reliability.
+
+### What Remains Outstanding
+
+Two items identified during review have not yet been addressed and are flagged here for transparency:
+
+1. **Domain-sensitivity study.** Running the existing mesh alongside a 30c and 50c variant at a single deep-stall angle would quantify the blockage correction. This requires rebuilding the mesh and is planned but not yet completed.
+
+2. **Temporal convergence study.** The production time step (Δt = 5 × 10⁻⁴ s) resolves approximately 39 steps per shedding cycle, slightly below the recommended 50–100. A brief sensitivity test at α = 20° with Δt halved would confirm adequacy. This is planned for the next revision.
+
+---
+
 ## Simulation Parameters
 
 | Parameter | Value |
